@@ -1,5 +1,43 @@
 import scrapy
 from pathlib import Path
+from pymongo import MongoClient
+import datetime
+import certifi
+ca = certifi.where()
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+
+
+DB_URL = os.getenv('DB_URL')
+client = MongoClient(DB_URL, tlsCAFile=ca)
+
+
+
+def upload_to_mongoDB(page, title, image, price, avail, stars):
+
+    db = client.ScrapyTutorial
+    collection = db[page]
+
+    data = {
+        "Title": title,
+        "Image": image,
+        "Price": price,
+        "In Stock": avail,
+        "Ratings": stars,
+        "date": datetime.datetime.now(tz=datetime.timezone.utc), 
+    }
+
+    id = collection.insert_one(data).inserted_id
+    print("id : ", id)
+
+
+
+
+
+
+
 
 class BooksSpider(scrapy.Spider):
     
@@ -40,5 +78,7 @@ class BooksSpider(scrapy.Spider):
             rating = card.css(".star-rating").attrib["class"]
             stars = rating.split(" ")[-1]
             # print("Rating : ", stars)
+            
+            upload_to_mongoDB(page, title, image, price, avail, stars)
         
         

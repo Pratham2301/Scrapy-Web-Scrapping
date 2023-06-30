@@ -2,9 +2,15 @@ from pymongo import MongoClient
 import datetime
 import certifi
 ca = certifi.where()
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
-client = MongoClient("mongodb+srv://prathamrajbhoj2003:RL555CiQeO6QMlJ5@scrapy-tutorial.edrnmzb.mongodb.net/", tlsCAFile=ca)
+
+DB_URL = os.getenv('DB_URL')
+client = MongoClient(DB_URL, tlsCAFile=ca)
+
 
 db = client.testDB
 collection = db.testCollection
