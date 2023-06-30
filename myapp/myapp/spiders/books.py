@@ -25,9 +25,20 @@ class BooksSpider(scrapy.Spider):
         for card in cards:
             
             title = card.css("h3>a::text").get()
-            print(title)
+            # print("Title : ", title)
             
             image = card.css("img").attrib["src"]
-            print(image)
+            # print("Image : ", image)
+            
+            price = card.css(".price_color::text").get()
+            # print("Price : ", price)
+            
+            avail = card.css(".availability>i").attrib["class"]
+            avail = (avail == "icon-ok")
+            # print("In Stock : ", avail)
+            
+            rating = card.css(".star-rating").attrib["class"]
+            stars = rating.split(" ")[-1]
+            # print("Rating : ", stars)
         
         
